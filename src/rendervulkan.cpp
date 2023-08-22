@@ -802,7 +802,8 @@ bool CVulkanDevice::createDevice()
 		m_bSupportsFp16 = vulkan12Features.shaderFloat16 && features2.features.shaderInt16;
 	}
 
-	float queuePriorities = 1.0f;
+	constexpr uint32_t queueCount{1};
+	std::array<float, queueCount> queuePriorities{1.0f};
 
 	VkDeviceQueueGlobalPriorityCreateInfoEXT queueCreateInfoEXT = {
 		.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_GLOBAL_PRIORITY_CREATE_INFO_EXT,
@@ -814,8 +815,8 @@ bool CVulkanDevice::createDevice()
 		.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,
 		.pNext = g_bNiceCap ? &queueCreateInfoEXT : nullptr,
 		.queueFamilyIndex = m_queueFamily,
-		.queueCount = 1,
-		.pQueuePriorities = &queuePriorities
+		.queueCount = queueCount,
+		.pQueuePriorities = queuePriorities.data()
 	};
 
 	std::vector< const char * > enabledExtensions;
